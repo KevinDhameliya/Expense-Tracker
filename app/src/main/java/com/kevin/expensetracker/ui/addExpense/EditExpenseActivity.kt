@@ -4,21 +4,27 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kevin.expensetracker.R
 
-class AddExpenseActivity : AppCompatActivity() {
+class EditExpenseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_add_expense)
+        setContentView(R.layout.activity_edit_expense)
+
+        val expenseId =
+            intent.getLongExtra("expense_id", -1)
 
         if (savedInstanceState == null) {
+
+            val fragment =
+                EditExpenseFragment.newInstance(expenseId)
 
             supportFragmentManager
                 .beginTransaction()
                 .replace(
-                    R.id.addExpenseContainer,
-                    AddExpenseFragment()
+                    R.id.editExpenseContainer,
+                    fragment
                 )
                 .commit()
         }
