@@ -39,7 +39,6 @@ class ExpenseAdapter(
         holder: ExpenseViewHolder,
         position: Int
     ) {
-
         holder.bind(expenses[position])
     }
 

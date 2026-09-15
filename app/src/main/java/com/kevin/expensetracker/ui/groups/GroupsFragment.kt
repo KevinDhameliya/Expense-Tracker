@@ -1,4 +1,4 @@
-package com.kevin.expensetracker.ui.home
+package com.kevin.expensetracker.ui.groups
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,15 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kevin.expensetracker.R
 import com.kevin.expensetracker.adapter.ExpenseAdapter
 import com.kevin.expensetracker.data.ExpenseRepository
-import com.kevin.expensetracker.databinding.FragmentHomeBinding
+import com.kevin.expensetracker.databinding.FragmentGroupsBinding
 import com.kevin.expensetracker.model.Expense
+import com.kevin.expensetracker.ui.addExpense.AddExpenseFragment
 import java.util.Locale
 
-class HomeFragment : Fragment() {
+class GroupsFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentGroupsBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var repository: ExpenseRepository
@@ -26,7 +28,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentHomeBinding.inflate(
+        _binding = FragmentGroupsBinding.inflate(
             inflater,
             container,
             false
@@ -44,15 +46,16 @@ class HomeFragment : Fragment() {
         repository = ExpenseRepository(requireContext())
 
         setupRecyclerView()
+        setupButtons()
 
-        loadData()
+        loadExpenses()
     }
 
     override fun onResume() {
         super.onResume()
 
         if (_binding != null) {
-            loadData()
+            loadExpenses()
         }
     }
 
@@ -60,53 +63,82 @@ class HomeFragment : Fragment() {
 
         expenseAdapter = ExpenseAdapter(
             onEditClick = { expense ->
-                editExpense(expense)
+                // TODO: Open edit expense screen
             },
+
             onDeleteClick = { expense ->
-                deleteExpense(expense)
+
+                repository.deleteExpense(expense.id)
+
+                loadExpenses()
             }
         )
 
-        binding.rvExpenses.layoutManager =
-            LinearLayoutManager(requireContext())
+        binding.rvExpenses.apply {
 
-        binding.rvExpenses.adapter =
-            expenseAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext()
+            )
+
+            adapter = expenseAdapter
+        }
     }
 
-    private fun loadData() {
+    private fun setupButtons() {
+
+        binding.btnAddExpense.setOnClickListener {
+
+            parentFragmentManager
+                .beginTransaction()
+                .replace(
+                    R.id.fragmentContainer,
+                    AddExpenseFragment()
+                )
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    private fun loadExpenses() {
 
         val expenses = repository.getExpenses()
 
+        // Update total amount
         val total = repository.getTotalExpense()
 
-        binding.tvTotalExpense.text =
+        binding.tvOverallAmount.text =
             String.format(
                 Locale.getDefault(),
                 "₹%.2f",
                 total
             )
 
-        binding.tvExpenseCount.text =
-            expenses.size.toString()
-
+        // Update RecyclerView
         expenseAdapter.submitList(expenses)
-    }
 
-    private fun editExpense(expense: Expense) {
+        // Show / hide empty state
+        if (expenses.isEmpty()) {
 
-        // Later we will open EditExpenseFragment
-    }
+            binding.tvNoExpenses.visibility =
+                View.VISIBLE
 
-    private fun deleteExpense(expense: Expense) {
+            binding.rvExpenses.visibility =
+                View.GONE
 
-        repository.deleteExpense(expense.id)
+        } else {
 
-        loadData()
+            binding.tvNoExpenses.visibility =
+                View.GONE
+
+            binding.rvExpenses.visibility =
+                View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {
+
         super.onDestroyView()
+
         _binding = null
     }
 }

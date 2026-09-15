@@ -1,15 +1,20 @@
 package com.kevin.expensetracker.ui.home
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kevin.expensetracker.R
 import com.kevin.expensetracker.databinding.ActivityExpenseListBinding
+import com.kevin.expensetracker.ui.account.AccountFragment
+import com.kevin.expensetracker.ui.addExpense.AddExpenseActivity
+import com.kevin.expensetracker.ui.friends.FriendsFragment
+import com.kevin.expensetracker.ui.groups.GroupsFragment
+import com.kevin.expensetracker.ui.mainActivity.ActivityFragment
 
 class ExpenseListActivity : AppCompatActivity() {
 
@@ -29,9 +34,6 @@ class ExpenseListActivity : AppCompatActivity() {
         setupAddExpenseButton()
     }
 
-    /**
-     * Handles status bar and navigation bar insets.
-     */
     private fun setupWindowInsets() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { view, insets ->
@@ -40,8 +42,6 @@ class ExpenseListActivity : AppCompatActivity() {
                 WindowInsetsCompat.Type.systemBars()
             )
 
-            // Apply only top/left/right padding to the root.
-            // Bottom inset is handled by BottomNavigationView.
             view.setPadding(
                 systemBars.left,
                 systemBars.top,
@@ -60,51 +60,35 @@ class ExpenseListActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Setup expense RecyclerView.
-     */
     private fun setupRecyclerView() {
 
         binding.rvExpenses.layoutManager =
             LinearLayoutManager(this)
-
-        // We will connect the SQLite data and adapter here.
-        //
-        // Example:
-        //
-        // val adapter = ExpenseAdapter(expenses)
-        // binding.rvExpenses.adapter = adapter
     }
 
-    /**
-     * Bottom navigation setup.
-     */
     private fun setupBottomNavigation() {
-
-        binding.bottomNavigation.selectedItemId =
-            R.id.nav_expenses
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
 
             when (item.itemId) {
 
-                R.id.nav_home -> {
-                    // TODO: Open Home screen
+                R.id.nav_groups -> {
+                    openFragment(GroupsFragment())
                     true
                 }
 
-                R.id.nav_expenses -> {
-                    // Already on Expense screen
+                R.id.nav_friends -> {
+                    openFragment(FriendsFragment())
                     true
                 }
 
-                R.id.nav_reports -> {
-                    // TODO: Open Reports screen
+                R.id.nav_activity -> {
+                    openFragment(ActivityFragment())
                     true
                 }
 
-                R.id.nav_settings -> {
-                    // TODO: Open Settings screen
+                R.id.nav_account -> {
+                    openFragment(AccountFragment())
                     true
                 }
 
@@ -113,19 +97,21 @@ class ExpenseListActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Add Expense button.
-     */
+    private fun openFragment(fragment: Fragment) {
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                fragment
+            )
+            .commit()
+    }
+
     private fun setupAddExpenseButton() {
-
-        binding.fabAddExpense.setOnClickListener {
-
-            // TODO:
-            // Open AddExpenseActivity
-            //
-            // startActivity(
-            //     Intent(this, AddExpenseActivity::class.java)
-            // )
+        binding.btnAddExpense.setOnClickListener {
+            val intent = Intent(this, AddExpenseActivity::class.java)
+            startActivity(intent)
         }
     }
 }

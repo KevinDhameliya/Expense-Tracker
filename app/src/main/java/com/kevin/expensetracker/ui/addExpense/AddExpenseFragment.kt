@@ -12,6 +12,7 @@ import com.kevin.expensetracker.R
 import com.kevin.expensetracker.data.ExpenseRepository
 import com.kevin.expensetracker.databinding.FragmentAddExpenseBinding
 import com.kevin.expensetracker.model.Expense
+import com.kevin.expensetracker.ui.MainActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -42,15 +43,23 @@ class AddExpenseFragment : Fragment() {
         view: View,
         savedInstanceState: Bundle?
     ) {
-
         super.onViewCreated(view, savedInstanceState)
+
+        // Hide bottom navigation
+        (requireActivity() as MainActivity)
+            .hideBottomNavigation()
 
         repository = ExpenseRepository(requireContext())
 
         setupCategory()
         setupDate()
         setupSaveButton()
+        setupBackButton()
     }
+
+    // ----------------------------------------
+    // Category
+    // ----------------------------------------
 
     private fun setupCategory() {
 
@@ -74,6 +83,10 @@ class AddExpenseFragment : Fragment() {
         binding.spinnerCategory.adapter = adapter
     }
 
+    // ----------------------------------------
+    // Date
+    // ----------------------------------------
+
     private fun setupDate() {
 
         binding.etDate.setOnClickListener {
@@ -93,18 +106,16 @@ class AddExpenseFragment : Fragment() {
                         day
                     )
 
-                    val format =
-                        SimpleDateFormat(
-                            "dd MMM yyyy",
-                            Locale.getDefault()
-                        )
+                    val format = SimpleDateFormat(
+                        "dd MMM yyyy",
+                        Locale.getDefault()
+                    )
 
                     binding.etDate.setText(
                         format.format(
                             selectedCalendar.time
                         )
                     )
-
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -113,13 +124,32 @@ class AddExpenseFragment : Fragment() {
         }
     }
 
+    // ----------------------------------------
+    // Save
+    // ----------------------------------------
+
     private fun setupSaveButton() {
 
         binding.btnSaveExpense.setOnClickListener {
-
             saveExpense()
         }
     }
+
+    // ----------------------------------------
+    // Back
+    // ----------------------------------------
+
+    private fun setupBackButton() {
+
+        binding.btnBack.setOnClickListener {
+
+            parentFragmentManager.popBackStack()
+        }
+    }
+
+    // ----------------------------------------
+    // Save Expense
+    // ----------------------------------------
 
     private fun saveExpense() {
 
@@ -138,18 +168,24 @@ class AddExpenseFragment : Fragment() {
         val category =
             binding.spinnerCategory.selectedItem.toString()
 
+        // Validate title
         if (title.isEmpty()) {
 
             binding.etTitle.error =
                 "Enter expense title"
 
+            binding.etTitle.requestFocus()
+
             return
         }
 
+        // Validate amount
         if (amountText.isEmpty()) {
 
             binding.etAmount.error =
                 "Enter amount"
+
+            binding.etAmount.requestFocus()
 
             return
         }
@@ -162,9 +198,12 @@ class AddExpenseFragment : Fragment() {
             binding.etAmount.error =
                 "Enter valid amount"
 
+            binding.etAmount.requestFocus()
+
             return
         }
 
+        // Validate date
         if (date.isEmpty()) {
 
             binding.etDate.error =
@@ -173,6 +212,7 @@ class AddExpenseFragment : Fragment() {
             return
         }
 
+        // Create expense
         val expense = Expense(
             title = title,
             amount = amount,
@@ -181,6 +221,7 @@ class AddExpenseFragment : Fragment() {
             notes = notes
         )
 
+        // Save expense
         repository.addExpense(expense)
 
         Toast.makeText(
@@ -189,11 +230,24 @@ class AddExpenseFragment : Fragment() {
             Toast.LENGTH_SHORT
         ).show()
 
-        requireActivity().finish()
+        // Go back to previous fragment
+        parentFragmentManager.popBackStack()
     }
 
+    // ----------------------------------------
+    // Destroy
+    // ----------------------------------------
+
     override fun onDestroyView() {
+
+        // Show bottom navigation again
+        if (activity is MainActivity) {
+            (requireActivity() as MainActivity)
+                .showBottomNavigation()
+        }
+
         super.onDestroyView()
+
         _binding = null
     }
 }
