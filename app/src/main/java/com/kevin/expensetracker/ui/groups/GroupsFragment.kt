@@ -62,25 +62,53 @@ class GroupsFragment : Fragment() {
     private fun setupRecyclerView() {
 
         expenseAdapter = ExpenseAdapter(
+
             onEditClick = { expense ->
-                // TODO: Open edit expense screen
+                editExpense(expense)
             },
 
             onDeleteClick = { expense ->
-
-                repository.deleteExpense(expense.id)
-
-                loadExpenses()
+                deleteExpense(expense)
             }
         )
 
         binding.rvExpenses.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = expenseAdapter
+            setHasFixedSize(true)
+        }
+    }
 
-            layoutManager = LinearLayoutManager(
-                requireContext()
+    private fun loadExpenses() {
+
+        val expenses = repository.getExpenses()
+
+        // Calculate total
+        val total = expenses.sumOf {
+            it.amount
+        }
+
+        binding.tvOverallAmount.text =
+            String.format(
+                Locale.getDefault(),
+                "₹%.2f",
+                total
             )
 
-            adapter = expenseAdapter
+        // Show/hide empty state
+        if (expenses.isEmpty()) {
+
+            binding.rvExpenses.visibility = View.GONE
+            binding.tvNoExpenses.visibility = View.VISIBLE
+
+        } else {
+
+            binding.rvExpenses.visibility = View.VISIBLE
+            binding.tvNoExpenses.visibility = View.GONE
+
+            expenseAdapter.submitList(
+                expenses
+            )
         }
     }
 
@@ -97,42 +125,30 @@ class GroupsFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
+//        binding.btnSearch.setOnClickListener {
+//            // Search functionality
+//        }
+
+        binding.btnAddPerson.setOnClickListener {
+            // Add person functionality
+        }
+
+//        binding.btnFilter.setOnClickListener {
+//            // Filter functionality
+//        }
     }
 
-    private fun loadExpenses() {
+    private fun editExpense(expense: Expense) {
 
-        val expenses = repository.getExpenses()
+        // Open EditExpenseFragment here later
+    }
 
-        // Update total amount
-        val total = repository.getTotalExpense()
+    private fun deleteExpense(expense: Expense) {
 
-        binding.tvOverallAmount.text =
-            String.format(
-                Locale.getDefault(),
-                "₹%.2f",
-                total
-            )
+        repository.deleteExpense(expense.id)
 
-        // Update RecyclerView
-        expenseAdapter.submitList(expenses)
-
-        // Show / hide empty state
-        if (expenses.isEmpty()) {
-
-            binding.tvNoExpenses.visibility =
-                View.VISIBLE
-
-            binding.rvExpenses.visibility =
-                View.GONE
-
-        } else {
-
-            binding.tvNoExpenses.visibility =
-                View.GONE
-
-            binding.rvExpenses.visibility =
-                View.VISIBLE
-        }
+        loadExpenses()
     }
 
     override fun onDestroyView() {

@@ -1,105 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <!-- Search -->
-
-    <ImageButton
-        android:id="@+id/btnSearch"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Search"
-        android:src="@drawable/ic_search"
-        app:layout_constraintEnd_toStartOf="@id/btnAddPerson"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Add Person -->
-
-    <ImageButton
-        android:id="@+id/btnAddPerson"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Add person"
-        android:src="@drawable/ic_person_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Divider -->
-
-    <View
-        android:id="@+id/topDivider"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
         android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="#E5E5E5"
+        android:layout_height="54dp"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnAddPerson" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Overall Balance -->
+<!--        <ImageButton-->
+<!--            android:id="@+id/btnSearch"-->
+<!--            android:layout_width="48dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:layout_marginEnd="4dp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:contentDescription="Search"-->
+<!--            android:padding="10dp"-->
+<!--            android:src="@drawable/ic_search"-->
+<!--            app:tint="#3F3F46"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/btnAddPerson"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <ImageButton
+            android:id="@+id/btnAddPerson"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Add person"
+            android:padding="10dp"
+            android:src="@drawable/ic_person_add"
+            app:tint="#3F3F46"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/tvOverallBalance"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="28dp"
-        android:text="Overall, you are owed"
+        android:layout_marginStart="10dp"
+        android:text="@string/overall_you_are_owed"
         android:textColor="#3F3F46"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topDivider" />
+        app:layout_constraintTop_toBottomOf="@id/topBar" />
 
     <TextView
         android:id="@+id/tvOverallAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="6dp"
         android:text="₹0.00"
         android:textColor="#16A085"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@id/tvOverallBalance"
-        app:layout_constraintTop_toBottomOf="@id/tvOverallBalance" />
+        android:textSize="20sp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toEndOf="@+id/tvOverallBalance"
+        app:layout_constraintTop_toTopOf="@+id/tvOverallBalance" />
 
-    <!-- Filter -->
-
-    <ImageButton
-        android:id="@+id/btnFilter"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_marginEnd="18dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Filter"
-        android:src="@drawable/ic_filter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvOverallBalance" />
-
-    <!-- Section Title -->
+<!--    <ImageButton-->
+<!--        android:id="@+id/btnFilter"-->
+<!--        android:layout_width="52dp"-->
+<!--        android:layout_height="52dp"-->
+<!--        android:layout_marginEnd="18dp"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:contentDescription="Filter"-->
+<!--        android:padding="14dp"-->
+<!--        android:src="@drawable/ic_filter"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/tvOverallAmount"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@id/tvOverallBalance" />-->
 
     <TextView
         android:id="@+id/tvRecentExpenses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="24dp"
         android:text="Recent Expenses"
         android:textColor="#3F3F46"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvOverallAmount" />
 
-    <!-- Empty State -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvExpenses"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:clipToPadding="false"
+        android:overScrollMode="ifContentScrolls"
+        android:paddingTop="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRecentExpenses" />
 
     <TextView
         android:id="@+id/tvNoExpenses"
@@ -109,29 +118,10 @@
         android:textColor="#777777"
         android:textSize="16sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/btnAddExpense"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvRecentExpenses" />
-
-    <!-- Expenses List -->
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvExpenses"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="16dp"
-        android:clipToPadding="false"
-        android:paddingBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/btnAddExpense"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvRecentExpenses" />
-
-    <!-- Add Expense -->
+        app:layout_constraintBottom_toBottomOf="@id/rvExpenses"
+        app:layout_constraintEnd_toEndOf="@id/rvExpenses"
+        app:layout_constraintStart_toStartOf="@id/rvExpenses"
+        app:layout_constraintTop_toTopOf="@id/rvExpenses" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddExpense"
@@ -139,13 +129,17 @@
         android:layout_height="60dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
+        android:minWidth="180dp"
         android:text="Add expense"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="18sp"
+        android:textStyle="normal"
         app:backgroundTint="#16A085"
         app:cornerRadius="32dp"
         app:icon="@drawable/ic_receipt"
+        app:iconGravity="textStart"
+        app:iconPadding="10dp"
         app:iconTint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
