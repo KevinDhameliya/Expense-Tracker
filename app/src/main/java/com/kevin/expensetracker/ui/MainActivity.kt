@@ -121,10 +121,6 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    // ----------------------------------------
-    // Bottom Navigation Visibility
-    // ----------------------------------------
-
     fun hideBottomNavigation() {
         binding.bottomNavigation.visibility = View.GONE
     }

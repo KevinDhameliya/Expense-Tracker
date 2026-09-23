@@ -1,60 +1,140 @@
 package com.kevin.expensetracker.ui.mainActivity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.kevin.expensetracker.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kevin.expensetracker.adapter.ActivityAdapter
+import com.kevin.expensetracker.data.ExpenseRepository
+import com.kevin.expensetracker.databinding.FragmentActivityBinding
+import com.kevin.expensetracker.model.Expense
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ActivityFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ActivityFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private var _binding: FragmentActivityBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var repository: ExpenseRepository
+    private lateinit var activityAdapter: ActivityAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentActivityBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+
+        return binding.root
+    }
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+
+        repository =
+            ExpenseRepository(requireContext())
+
+        setupRecyclerView()
+        setupButtons()
+        loadActivity()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (_binding != null) {
+            loadActivity()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_activity, container, false)
+    private fun setupRecyclerView() {
+
+        activityAdapter = ActivityAdapter { expense ->
+
+            openExpense(expense)
+        }
+
+        binding.rvActivity.apply {
+
+            layoutManager =
+                LinearLayoutManager(requireContext())
+
+            adapter = activityAdapter
+
+            setHasFixedSize(true)
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ActivityFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ActivityFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun loadActivity() {
+
+        val expenses =
+            repository.getExpenses()
+
+        // Show count
+        binding.tvActivityCount.text =
+            when (expenses.size) {
+
+                0 -> "No expenses"
+
+                1 -> "1 expense"
+
+                else ->
+                    "${expenses.size} expenses"
             }
+
+        if (expenses.isEmpty()) {
+
+            binding.rvActivity.visibility =
+                View.GONE
+
+            binding.emptyState.visibility =
+                View.VISIBLE
+
+        } else {
+
+            binding.rvActivity.visibility =
+                View.VISIBLE
+
+            binding.emptyState.visibility =
+                View.GONE
+
+            activityAdapter.submitList(
+                expenses.reversed()
+            )
+        }
+    }
+
+    private fun setupButtons() {
+
+        binding.btnActivityFilter.setOnClickListener {
+
+            showFilterOptions()
+        }
+    }
+
+    private fun openExpense(expense: Expense) {
+
+        // Later you can open ExpenseDetailsFragment here.
+    }
+
+    private fun showFilterOptions() {
+
+        // Filter functionality can be added here.
+    }
+
+    override fun onDestroyView() {
+
+        super.onDestroyView()
+
+        _binding = null
     }
 }
